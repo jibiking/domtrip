@@ -216,12 +216,15 @@ function home(){
     h+=`<div style="margin-top:8px"><div class="stat"><span>${k}</span><span>${x.correctDistinct}/${x.total}（${r}%）</span></div><div class="bar"><div class="fill" style="width:${r}%"></div></div></div>`; });
   h += `</div>`;
   // フィルタ
+  // タグ別件数はタグ選択を外した集合から数える（選択状態で母数が動かないようにする）。
+  // 609枚を走査するので、ボタン3個ぶんで3回回さないよう1回だけ計算して使い回す
+  const tc = tagCounts(filterCards({...FILTER,tags:[]}));
   const years=["all","R03","R04","R05","R06","R07"];
   h += `<div class="card"><b>出題範囲</b>
     <div style="margin:8px 0"><div class="muted">モード</div><div class="seg" id="segMode">
       ${seg("mode","mcq","4択")}${seg("mode","review","解答リビュー")}${seg("mode","flash","暗記カード")}${seg("mode","weak","苦手復習")}</div></div>
     <div style="margin:8px 0"><div class="muted">タグ（複数選択可 / 未選択は全部）</div><div class="seg" id="segTag">
-      ${TAG_ORDER.map(k=>`<button data-v="${k}" class="${FILTER.tags.includes(k)?"on":""}">${TAGS[k].label} ${tagCounts(filterCards({...FILTER,tags:[]}))[k]}</button>`).join("")}</div></div>
+      ${TAG_ORDER.map(k=>`<button data-v="${k}" class="${FILTER.tags.includes(k)?"on":""}">${TAGS[k].label} ${tc[k]}</button>`).join("")}</div></div>
     <div class="row"><div style="flex:1"><div class="muted">科目</div><select id="selSub">
       ${["all","科目1","科目2","科目3"].map(v=>`<option value="${v}" ${FILTER.subject===v?"selected":""}>${v==="all"?"全科目":v}</option>`).join("")}</select></div>
     <div style="flex:1"><div class="muted">年度</div><select id="selYear">
